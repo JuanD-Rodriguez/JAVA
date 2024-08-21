@@ -1,0 +1,4 @@
+Colombia,Juan Rodriguez,Futbol,Masculino,No aplica,Plata,2024,21
+Colombia,Juan Hernandez,Basketball,Masculino,No aplica,PLATA,2024,43
+Italia,Carlos Sanchez,Natacion,Masculino,200 metros,ORO,2024,32
+Italia,Carlos Sanchez,Natacion,Masculino,200 metros,plata,2024,32

@@ -88,8 +88,19 @@ public class Medallista implements Serializable {
         this.edad = edad;
     }
 
-    
-    
+    // Método para convertir un Medallista en una cadena de texto para almacenar en un archivo
+    public String toFileString() {
+        return pais + "," + nombre + "," + disciplina + "," + categoria + "," +
+                subcategoria + "," + tipoMedalla + "," + año + "," + edad;
+    }
+
+    // Método para crear un Medallista desde una cadena de texto del archivo
+    public static Medallista fromFileString(String fileString) {
+        String[] datos = fileString.split(",");
+        return new Medallista(datos[0], datos[1], datos[2], datos[3], datos[4],
+                datos[5], Integer.parseInt(datos[6]), Integer.parseInt(datos[7]));
+    }
+
     @Override
     public String toString() {
         return "País: " + pais + ", Nombre: " + nombre + ", Disciplina: " + disciplina + 

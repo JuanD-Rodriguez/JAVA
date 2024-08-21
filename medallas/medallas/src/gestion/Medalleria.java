@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class Medalleria {
     private List<Medallista> medallistas;
-    private final String archivo = "medallistas.dat";
+    private final String archivo = "medallistas.txt"; // Cambiado a .txt
 
     public Medalleria() {
         medallistas = new ArrayList<>();
@@ -29,20 +29,32 @@ public class Medalleria {
                 .collect(Collectors.toList());
     }
 
+    public List<Medallista> listarMedallistasPorMedalla(String tipoMedalla) {
+        return medallistas.stream()
+                .filter(m -> m.getTipoMedalla().equalsIgnoreCase(tipoMedalla))
+                .collect(Collectors.toList());
+    }
+
     private void guardarMedallistas() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
-            oos.writeObject(medallistas);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
+            for (Medallista medallista : medallistas) {
+                bw.write(medallista.toFileString());
+                bw.newLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private void cargarMedallistas() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
-            medallistas = (List<Medallista>) ois.readObject();
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                medallistas.add(Medallista.fromFileString(linea));
+            }
         } catch (FileNotFoundException e) {
             System.out.println("Archivo no encontrado, iniciando nuevo registro.");
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
