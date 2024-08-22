@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class Medalleria {
     private List<Medallista> medallistas;
-    private final String archivo = "medallistas.txt"; // Cambiado a .txt
+    private final String archivo = "medallistas.csv";
 
     public Medalleria() {
         medallistas = new ArrayList<>();
