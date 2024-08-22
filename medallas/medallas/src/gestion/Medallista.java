@@ -1,6 +1,9 @@
 package gestion;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Medallista implements Serializable {
     private String pais;
@@ -10,10 +13,12 @@ public class Medallista implements Serializable {
     private String subcategoria;
     private String tipoMedalla;
     private int año;
-    private int edad;
+    private int edad; 
+    private String hobbie;
+    private Date fechaNacimiento;
 
-    public Medallista(String pais, String nombre, String disciplina, String categoria, 
-                      String subcategoria, String tipoMedalla, int año, int edad) {
+    public Medallista(String pais, String nombre, String disciplina, String categoria,
+                      String subcategoria, String tipoMedalla, int año, String hobbie, Date fechaNacimiento) {
         this.pais = pais;
         this.nombre = nombre;
         this.disciplina = disciplina;
@@ -21,7 +26,9 @@ public class Medallista implements Serializable {
         this.subcategoria = subcategoria;
         this.tipoMedalla = tipoMedalla;
         this.año = año;
-        this.edad = edad;
+        this.hobbie = hobbie;
+        this.fechaNacimiento = fechaNacimiento;
+        this.edad = calcularEdad(fechaNacimiento);
     }
 
     public String getPais() {
@@ -84,27 +91,63 @@ public class Medallista implements Serializable {
         return edad;
     }
 
-    public void setEdad(int edad) {
-        this.edad = edad;
+    public String getHobbie() {
+        return hobbie;
     }
 
-    // Método para convertir un Medallista en una cadena de texto para almacenar en un archivo
+    public void setHobbie(String hobbie) {
+        this.hobbie = hobbie;
+    }
+
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+        this.edad = calcularEdad(fechaNacimiento); 
+    }
+
+    private int calcularEdad(Date fechaNacimiento) {
+        Calendar fechaNac = Calendar.getInstance();
+        fechaNac.setTime(fechaNacimiento);
+        Calendar hoy = Calendar.getInstance();
+
+        int edad = hoy.get(Calendar.YEAR) - fechaNac.get(Calendar.YEAR);
+
+        if (hoy.get(Calendar.MONTH) < fechaNac.get(Calendar.MONTH) ||
+            (hoy.get(Calendar.MONTH) == fechaNac.get(Calendar.MONTH) && hoy.get(Calendar.DAY_OF_MONTH) < fechaNac.get(Calendar.DAY_OF_MONTH))) {
+            edad--;
+        }
+
+        return edad;
+    }
+
     public String toFileString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return pais + "," + nombre + "," + disciplina + "," + categoria + "," +
-                subcategoria + "," + tipoMedalla + "," + año + "," + edad;
+                subcategoria + "," + tipoMedalla + "," + año + "," + hobbie + "," + dateFormat.format(fechaNacimiento);
     }
 
-    // Método para crear un Medallista desde una cadena de texto del archivo
     public static Medallista fromFileString(String fileString) {
         String[] datos = fileString.split(",");
-        return new Medallista(datos[0], datos[1], datos[2], datos[3], datos[4],
-                datos[5], Integer.parseInt(datos[6]), Integer.parseInt(datos[7]));
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaNacimiento = dateFormat.parse(datos[8]);
+            return new Medallista(datos[0], datos[1], datos[2], datos[3], datos[4],
+                    datos[5], Integer.parseInt(datos[6]), datos[7], fechaNacimiento);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public String toString() {
-        return "País: " + pais + ", Nombre: " + nombre + ", Disciplina: " + disciplina + 
-               ", Categoría: " + categoria + ", Subcategoría: " + subcategoria + 
-               ", Tipo de Medalla: " + tipoMedalla + ", Año: " + año + ", Edad: " + edad;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return "País: " + pais + ", Nombre: " + nombre + ", Disciplina: " + disciplina +
+               ", Categoría: " + categoria + ", Subcategoría: " + subcategoria +
+               ", Tipo de Medalla: " + tipoMedalla + ", Año: " + año + ", Edad: " + edad +
+               ", Fecha de Nacimiento: " + dateFormat.format(fechaNacimiento) + ", Hobbie: " + hobbie;
     }
 }
