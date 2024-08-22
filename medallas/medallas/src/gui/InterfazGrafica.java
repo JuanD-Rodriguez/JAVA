@@ -4,8 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import gestion.Medalleria;
 import gestion.Medallista;
+
   
   
     @SuppressWarnings("unchecked")
@@ -44,7 +47,7 @@ public class InterfazGrafica extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Cambiar el fondo y el color del panel de formulario
+        // Panel del formulario
         JPanel panelFormulario = new JPanel(new GridLayout(0, 2, 10, 10));
         panelFormulario.setBackground(Color.LIGHT_GRAY);
         panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -56,9 +59,9 @@ public class InterfazGrafica extends JFrame {
         JTextField campoSubcategoria = new JTextField();
         JTextField campoTipoMedalla = new JTextField();
         JTextField campoAño = new JTextField();
-        JTextField campoEdad = new JTextField();
+        JTextField campoHobbie = new JTextField();
+        JTextField campoFechaNacimiento = new JTextField(); // Para la fecha de nacimiento
 
-        // Configuración de las etiquetas con fuente más grande y negrita
         JLabel labelPais = new JLabel("País:");
         labelPais.setFont(new Font("Sans Serif", Font.BOLD, 14));
         JLabel labelNombre = new JLabel("Nombre:");
@@ -73,10 +76,12 @@ public class InterfazGrafica extends JFrame {
         labelTipoMedalla.setFont(new Font("Sans Serif", Font.BOLD, 14));
         JLabel labelAño = new JLabel("Año:");
         labelAño.setFont(new Font("Sans Serif", Font.BOLD, 14));
-        JLabel labelEdad = new JLabel("Edad:");
-        labelEdad.setFont(new Font("Sans Serif", Font.BOLD, 14));
+        JLabel labelHobbie = new JLabel("Hobbie:");
+        labelHobbie.setFont(new Font("Sans Serif", Font.BOLD, 14));
+        JLabel labelFechaNacimiento = new JLabel("Fecha de Nacimiento (yyyy-MM-dd):");
+        labelFechaNacimiento.setFont(new Font("Sans Serif", Font.BOLD, 14));
 
-        // Añadir las etiquetas y campos al formulario
+        // Añadir etiquetas y campos al formulario
         panelFormulario.add(labelPais);
         panelFormulario.add(campoPais);
         panelFormulario.add(labelNombre);
@@ -91,10 +96,12 @@ public class InterfazGrafica extends JFrame {
         panelFormulario.add(campoTipoMedalla);
         panelFormulario.add(labelAño);
         panelFormulario.add(campoAño);
-        panelFormulario.add(labelEdad);
-        panelFormulario.add(campoEdad);
+        panelFormulario.add(labelHobbie);
+        panelFormulario.add(campoHobbie);
+        panelFormulario.add(labelFechaNacimiento);
+        panelFormulario.add(campoFechaNacimiento);
 
-        // Crear y estilizar los botones
+        // Botones
         JButton botonAgregar = new JButton("Agregar Medallista");
         botonAgregar.setBackground(new Color(34, 139, 34));
         botonAgregar.setForeground(Color.WHITE);
@@ -123,22 +130,29 @@ public class InterfazGrafica extends JFrame {
         botonFiltrarMedalla.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         botonFiltrarMedalla.setFocusPainted(false);
 
-        // Añadir funcionalidad a los botones
+        // Funcionalidad de los botones
         botonAgregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Medallista medallista = new Medallista(
-                        campoPais.getText(),
-                        campoNombre.getText(),
-                        campoDisciplina.getText(),
-                        campoCategoria.getText(),
-                        campoSubcategoria.getText(),
-                        campoTipoMedalla.getText(),
-                        Integer.parseInt(campoAño.getText()),
-                        Integer.parseInt(campoEdad.getText())
-                );
-                medalleria.agregarMedallista(medallista);
-                JOptionPane.showMessageDialog(null, "Medallista agregado con éxito.");
+                try {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    Date fechaNacimiento = dateFormat.parse(campoFechaNacimiento.getText());
+                    Medallista medallista = new Medallista(
+                            campoPais.getText(),
+                            campoNombre.getText(),
+                            campoDisciplina.getText(),
+                            campoCategoria.getText(),
+                            campoSubcategoria.getText(),
+                            campoTipoMedalla.getText(),
+                            Integer.parseInt(campoAño.getText()),
+                            campoHobbie.getText(),
+                            fechaNacimiento
+                    );
+                    medalleria.agregarMedallista(medallista);
+                    JOptionPane.showMessageDialog(null, "Medallista agregado con éxito.");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error al agregar medallista: " + ex.getMessage());
+                }
             }
         });
 
@@ -177,7 +191,7 @@ public class InterfazGrafica extends JFrame {
             }
         });
 
-        // Crear panel para botones con espacio y estilo
+        // Panel para los botones
         JPanel panelBotones = new JPanel();
         panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 15));
         panelBotones.setBackground(Color.LIGHT_GRAY);
